@@ -1,12 +1,19 @@
 # BuffGate
 
-[![Go](https://img.shields.io/badge/Go-1.16+-00ADD8?style=flat&logo=go)](https://golang.org)
-[![MongoDB](https://img.shields.io/badge/MongoDB-3.6+-47A248?style=flat&logo=mongodb)](https://www.mongodb.com)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/lightlfyan/buffgate/master/arch.png" alt="BuffGate Architecture" width="800">
+</p>
 
-> **The Eyes and Ears of Your AI Agents**
->
-> Because you can't fix what you can't see.
+<p align="center">
+  <strong>The Eyes and Ears of Your AI Agents</strong><br>
+  <em>Because you can't fix what you can't see.</em>
+</p>
+
+<p align="center">
+  <a href="https://golang.org"><img src="https://img.shields.io/badge/Go-1.16+-00ADD8?style=flat&logo=go" alt="Go"></a>
+  <a href="https://www.mongodb.com"><img src="https://img.shields.io/badge/MongoDB-3.6+-47A248?style=flat&logo=mongodb" alt="MongoDB"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
+</p>
 
 ---
 
