@@ -4,37 +4,160 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-3.6+-47A248?style=flat&logo=mongodb)](https://www.mongodb.com)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-> High performance buffering frontend for MongoDB
+> **Observability Infrastructure for AI Agents**
+>
+> Collect, Store, Analyze — The Foundation for Agent Behavior Optimization
 
-BuffGate 是一个高性能的 MongoDB 前端缓冲服务，专为客户端事件日志收集场景设计。通过双缓冲机制和对象池技术，显著提升写入吞吐量。
+BuffGate is a high-performance event collection service designed for the AI Agent era. It serves as the observability backbone in AI engineering harness, capturing runtime events that become the data source for agent behavior analysis, enabling continuous optimization of prompts and execution strategies.
 
 ---
 
-## 特性
+## Why BuffGate?
 
-- 🚀 **高性能** - 双缓冲 + 批量写入，支持高并发场景
-- 🔄 **对象复用** - sync.Pool 减少 GC 压力
-- ⚡ **自适应策略** - 低负载直写，高负载批量
-- 🌐 **CORS 支持** - 开箱即用的跨域配置
-- 📦 **轻量级** - 核心代码简洁，易于部署
+In the age of AI Agents, understanding **what your agents do** is as important as **what they produce**. BuffGate provides:
 
-## 架构
+| Challenge | Solution |
+|-----------|----------|
+| Agent behavior is opaque | Capture every action, decision, and outcome |
+| Prompts need iteration | Ground optimization in real usage data |
+| Strategies must evolve | Analyze patterns across thousands of runs |
+| Infrastructure must scale | Handle high-throughput event streams effortlessly |
+
+## Vision
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Clients   │────▶│  BuffGate   │────▶│   MongoDB   │
-└─────────────┘     │  (Gin+Giant)│     │  (Bulk API) │
-                    └─────────────┘     └─────────────┘
-                           │
-                    ┌──────┴──────┐
-                    │  双缓冲机制  │
-                    │ r_buff ⇄ w_buff │
-                    └─────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AI Engineering Harness                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐     │
+│   │  Agent   │    │  Agent   │    │  Agent   │    │  Agent   │     │
+│   │    A     │    │    B     │    │    C     │    │    D     │     │
+│   └────┬─────┘    └────┬─────┘    └────┬─────┘    └────┬─────┘     │
+│        │               │               │               │            │
+│        └───────────────┴───────┬───────┴───────────────┘            │
+│                                │                                     │
+│                                ▼                                     │
+│                    ┌─────────────────────┐                          │
+│                    │      BuffGate       │                          │
+│                    │   Event Collector   │                          │
+│                    └──────────┬──────────┘                          │
+│                               │                                      │
+└───────────────────────────────┼──────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         Data Layer                                   │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   ┌──────────────┐                         ┌──────────────────┐     │
+│   │   MongoDB    │  ◀── Event Stream ───▶  │  Analysis Engine │     │
+│   │  (Storage)   │                         │  (Future)        │     │
+│   └──────────────┘                         └──────────────────┘     │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+                                │
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                       Optimization Loop                              │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐           │
+│    │   Analyze   │───▶│   Refine    │───▶│   Deploy    │           │
+│    │  Behavior   │    │   Prompts   │    │  Strategy   │           │
+│    └─────────────┘    └─────────────┘    └─────────────┘           │
+│           ▲                                        │                 │
+│           └────────────────────────────────────────┘                 │
+│                      Continuous Improvement                          │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-## 快速开始
+## Core Capabilities
 
-### 安装
+### 🎯 Event Collection
+
+Capture the full spectrum of agent runtime events:
+
+```json
+{
+  "v": "1.0",
+  "an": "code-assistant",
+  "ds": "ide-plugin",
+  "av": "2.1.0",
+  "t": "tool_call",
+  "cid": "session_abc123",
+  "uid": "user_001",
+  "en": "file_write",
+  "ev": {
+    "tool": "Write",
+    "file": "src/main.go",
+    "tokens_used": "847",
+    "latency_ms": "234",
+    "success": "true"
+  }
+}
+```
+
+### 📊 Behavior Analysis Ready
+
+Structured event schema designed for downstream analytics:
+
+| Event Type | Use Case |
+|------------|----------|
+| `tool_call` | Analyze tool usage patterns, identify frequent operations |
+| `decision` | Track reasoning paths, evaluate decision quality |
+| `error` | Identify failure modes, prioritize fixes |
+| `milestone` | Measure task completion, success rates |
+| `feedback` | Correlate user feedback with agent actions |
+
+### ⚡ High Performance
+
+- **Double Buffering** - Decouple ingestion from persistence
+- **Object Pooling** - Minimize GC pressure
+- **Adaptive Batching** - Optimize for both low and high load
+- **Bulk Writes** - Maximize MongoDB throughput
+
+## Architecture
+
+```
+                    Agent Runtime
+                         │
+         ┌───────────────┼───────────────┐
+         │               │               │
+         ▼               ▼               ▼
+    ┌─────────┐    ┌─────────┐    ┌─────────┐
+    │ Agent A │    │ Agent B │    │ Agent N │
+    └────┬────┘    └────┬────┘    └────┬────┘
+         │               │               │
+         └───────────────┼───────────────┘
+                         │ HTTP POST /collect
+                         ▼
+              ┌─────────────────────┐
+              │   Gin HTTP Server   │
+              │   (CORS Enabled)    │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │   Giant Buffer      │
+              │  ┌─────┐   ┌─────┐  │
+              │  │w_buf│◀▶│r_buf│  │
+              │  └─────┘   └─────┘  │
+              │  + sync.Pool        │
+              └──────────┬──────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │      MongoDB        │
+              │  DB: gsensor        │
+              │  Collection: logs   │
+              └─────────────────────┘
+```
+
+## Quick Start
+
+### Install
 
 ```bash
 git clone https://github.com/lightlfyan/buffgate.git
@@ -42,24 +165,21 @@ cd buffgate
 go mod download
 ```
 
-### 配置
+### Configure
 
-创建 `config/config.json`:
+Create `config/config.json`:
 
 ```json
 {
   "port": ":8100",
-  "mgo_url": "mongodb://username:password@localhost:27017/collect"
+  "mgo_url": "mongodb://localhost:27017/agent_events"
 }
 ```
 
-### 运行
+### Run
 
 ```bash
 go run example_server.go
-# 或
-go build -o buffgate example_server.go
-./buffgate
 ```
 
 ### Docker
@@ -69,115 +189,217 @@ docker build -t buffgate .
 docker run -p 8100:8100 buffgate
 ```
 
-## API
+## API Reference
 
 ### POST /collect
 
-提交事件日志。
+Submit an agent event.
 
-**请求示例:**
+**Request:**
 
 ```bash
 curl -X POST http://localhost:8100/collect \
   -H "Content-Type: application/json" \
   -d '{
     "v": "1.0",
-    "an": "my-app",
-    "ds": "web",
-    "av": "2.0.0",
-    "t": "track",
-    "z": "nonce123",
-    "sgn": "signature",
-    "cid": "client_001",
-    "uid": "user_123",
-    "en": "page_view",
-    "ev": {"page": "/home"}
+    "an": "my-agent",
+    "ds": "cli",
+    "av": "1.0.0",
+    "t": "tool_call",
+    "z": "nonce_abc123",
+    "sgn": "hmac_sha256_signature",
+    "cid": "conv_xyz789",
+    "uid": "user_001",
+    "en": "read_file",
+    "ev": {
+      "file": "src/app.ts",
+      "success": "true",
+      "latency_ms": "45"
+    }
   }'
 ```
 
-**字段说明:**
+**Schema:**
 
-| 字段 | Key | 必填 | 说明 |
-|------|-----|:----:|------|
-| Version | v | ✓ | 协议版本 |
-| AppName | an | ✓ | 应用名称 |
-| DataSource | ds | ✓ | 数据来源 |
-| AppVersion | av | ✓ | 应用版本 |
-| Type | t | ✓ | 事件类型 |
-| Nonce | z | ✓ | 随机数 |
-| Sign | sgn | ✓ | 签名 |
-| ClientID | cid | ✓ | 客户端ID |
-| UserID | uid | ✗ | 用户ID |
-| Event | en | ✓ | 事件名称 |
-| EventValue | ev | ✗ | 扩展字段 |
+| Field | JSON Key | Required | Description |
+|-------|----------|:--------:|-------------|
+| Version | `v` | ✓ | Schema version |
+| Agent Name | `an` | ✓ | Agent identifier |
+| Data Source | `ds` | ✓ | Origin (cli, api, plugin, etc.) |
+| Agent Version | `av` | ✓ | Agent version |
+| Type | `t` | ✓ | Event type |
+| Nonce | `z` | ✓ | Request nonce |
+| Signature | `sgn` | ✓ | Request signature |
+| Conversation ID | `cid` | ✓ | Session/conversation identifier |
+| User ID | `uid` | | Optional user identifier |
+| Event | `en` | ✓ | Event name |
+| Event Value | `ev` | | Arbitrary key-value payload |
 
-**响应:**
+**Response:**
 
-| 状态码 | 说明 |
+| Status | Body |
 |--------|------|
-| 200 | 成功 (`ok`) |
-| 400 | 请求格式错误 |
+| 200 | `ok` |
+| 400 | `payload error` |
 
-## 性能优化
+## Integration Examples
 
-### 双缓冲机制
+### Python Agent SDK
 
+```python
+import requests
+import json
+import time
+import hmac
+import hashlib
+import uuid
+
+class BuffGateClient:
+    def __init__(self, endpoint, agent_name, secret):
+        self.endpoint = endpoint
+        self.agent_name = agent_name
+        self.secret = secret
+
+    def emit(self, event_type, event_name, conversation_id, payload=None, user_id=None):
+        nonce = str(uuid.uuid4())
+        timestamp = str(int(time.time()))
+
+        data = {
+            "v": "1.0",
+            "an": self.agent_name,
+            "ds": "sdk",
+            "av": "1.0.0",
+            "t": event_type,
+            "z": nonce,
+            "sgn": self._sign(nonce, timestamp),
+            "cid": conversation_id,
+            "uid": user_id,
+            "en": event_name,
+            "ev": payload or {}
+        }
+
+        requests.post(f"{self.endpoint}/collect", json=data)
+
+    def _sign(self, nonce, timestamp):
+        msg = f"{nonce}:{timestamp}".encode()
+        return hmac.new(self.secret.encode(), msg, hashlib.sha256).hexdigest()
+
+# Usage
+client = BuffGateClient("http://localhost:8100", "code-agent", "secret")
+
+# Emit tool call event
+client.emit(
+    event_type="tool_call",
+    event_name="file_read",
+    conversation_id="conv_123",
+    payload={"file": "main.go", "success": True, "tokens": 150}
+)
 ```
-写入 → w_buff ──swap──▶ r_buff → MongoDB
-        (写缓冲)          (读缓冲)
-```
 
-读写分离，避免锁竞争。
+### TypeScript Agent SDK
 
-### 对象池
+```typescript
+interface AgentEvent {
+  v: string;
+  an: string;
+  ds: string;
+  av: string;
+  t: string;
+  z: string;
+  sgn: string;
+  cid: string;
+  uid?: string;
+  en: string;
+  ev?: Record<string, string>;
+}
 
-```go
-pool = &sync.Pool{
-    New: func() interface{} {
-        return new(model.ClientEvent)
-    },
+class BuffGateClient {
+  constructor(
+    private endpoint: string,
+    private agentName: string,
+    private secret: string
+  ) {}
+
+  async emit(
+    eventType: string,
+    eventName: string,
+    conversationId: string,
+    payload?: Record<string, string>,
+    userId?: string
+  ): Promise<void> {
+    const nonce = crypto.randomUUID();
+
+    const event: AgentEvent = {
+      v: "1.0",
+      an: this.agentName,
+      ds: "sdk",
+      av: "1.0.0",
+      t: eventType,
+      z: nonce,
+      sgn: await this.sign(nonce),
+      cid: conversationId,
+      uid: userId,
+      en: eventName,
+      ev: payload,
+    };
+
+    await fetch(`${this.endpoint}/collect`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(event),
+    });
+  }
+
+  private async sign(nonce: string): Promise<string> {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(this.secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+    const sig = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      new TextEncoder().encode(nonce)
+    );
+    return Array.from(new Uint8Array(sig))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
 }
 ```
 
-复用对象，降低 GC 开销。
+## Roadmap
 
-### 批量写入
+### Phase 1: Foundation ✅
+- [x] High-performance event ingestion
+- [x] MongoDB persistence
+- [x] Double-buffer architecture
 
-- 队列 < 10: 直接写入
-- 队列 ≥ 10: 批量缓冲 (每批 1024 条)
+### Phase 2: Observability (Planned)
+- [ ] Prometheus metrics export
+- [ ] Health check endpoints
+- [ ] Real-time dashboard
 
-## 项目结构
+### Phase 3: Analysis (Planned)
+- [ ] Built-in query API for event analysis
+- [ ] Aggregation pipelines for behavior patterns
+- [ ] Export to data warehouses
 
-```
-buffgate/
-├── example_server.go    # HTTP 服务入口
-├── config/
-│   ├── config.go        # 配置加载
-│   └── cfg_type.go      # 配置类型
-├── model/
-│   └── logtype.go       # 数据模型
-├── giant/
-│   └── giant.go         # 核心缓冲层
-└── config.json          # 配置示例
-```
+### Phase 4: Intelligence (Future)
+- [ ] ML-based anomaly detection
+- [ ] Automated prompt optimization suggestions
+- [ ] Strategy recommendation engine
 
-## 配置说明
+## Contributing
 
-| 参数 | 说明 | 示例 |
-|------|------|------|
-| port | HTTP 端口 | `:8100` |
-| mgo_url | MongoDB 连接串 | `mongodb://user:pass@host:27017/db` |
-
-## 监控
-
-日志输出:
-- `queue len: N` - 当前队列深度 (每 10s)
-- `flush: M N` - 批量写入 M 条，队列剩余 N 条
-
-## 相关文档
-
-- [技术文档](TECHNICAL_DOC.md) - 完整架构与 API 文档
+Contributions are welcome! Please read our contributing guidelines before submitting PRs.
 
 ## License
 
 [MIT](LICENSE)
+
+---
+
+**[中文文档](README_CN.md)** | [Technical Documentation](TECHNICAL_DOC.md)
